@@ -4,6 +4,7 @@ import "./Dashboard.css";
 import Form from "../../components/form/Form";
 import { toast } from "react-toastify";
 import { useTasks } from "../../context/TaskContext";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 interface Column {
   _id: string;
@@ -17,6 +18,7 @@ interface Task {
   description: string;
   dueDate: string;
   assignedTo: string;
+  columnId?: string;
 }
 
 const Dashboard: React.FC = () => {
@@ -52,7 +54,7 @@ const Dashboard: React.FC = () => {
     };
 
     fetchColumns();
-  }, [getTasks]);
+  }, []);
 
   const fields = [
     { label: "Title", name: "title", type: "text" },
@@ -124,54 +126,125 @@ const Dashboard: React.FC = () => {
       taskId,
     };
     const { success } = await deleteTask(payload);
-    if(success) toast.success("Task removed successfully");
+    if (success) toast.success("Task removed successfully");
+  };
+
+  const handleDragEnd = async (result: any) => {
+    const { destination, source } = result;
+
+    // If dropped outside any column
+    if (!destination) {
+      return;
+    }
+
+    // If the task is dropped in the same position
+    if (destination.index === source.index && destination.droppableId === source.droppableId) {
+      return;
+    }
+
+    const sourceColumn = columns.find((column) => column._id === source.droppableId);
+    const destColumn = columns.find((column) => column._id === destination.droppableId);
+
+    if (sourceColumn && destColumn) {
+      // Remove the task from source column
+      const [removedTask] = sourceColumn.tasks.splice(source.index, 1);
+
+      // Add the task to the destination column
+      destColumn.tasks.splice(destination.index, 0, removedTask);
+
+      setColumns((prevColumns) =>
+        prevColumns.map((column) =>
+          column._id === sourceColumn._id ? { ...column, tasks: sourceColumn.tasks } :
+          column._id === destColumn._id ? { ...column, tasks: destColumn.tasks } : column
+        )
+      );
+
+      // Now update the task's columnId in the backend
+      const updatedTask = { ...removedTask, columnId: destColumn._id };
+      const { success } = await updateTask(updatedTask.id, updatedTask);
+
+      if (success) {
+        toast.success("Task moved successfully");
+      } else {
+        toast.error("Failed to update task");
+        setColumns((prevColumns) =>
+          prevColumns.map((column) =>
+            column._id === sourceColumn._id ? { ...column, tasks: sourceColumn.tasks } :
+            column._id === destColumn._id ? { ...column, tasks: destColumn.tasks } : column
+          )
+        );
+      }
+    }
   };
 
   return (
     <div>
-      <div className="task-board">
-        {columns.map((column) => (
-          <div className="column" key={column._id}>
-            <div className="column-header">
-              <h3
-                contentEditable
-                suppressContentEditableWarning
-                onBlur={(e) =>
-                  handleRenameColumn(
-                    column._id,
-                    e.currentTarget.textContent || column.columnName
-                  )
-                }
-              >
-                {column.columnName}
-              </h3>
-              <button onClick={() => handleRemoveColumn(column._id)}>X</button>
-            </div>
-            {column.tasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                onEdit={() => console.log("Edit task", task.id)}
-                onDelete={() => handleRemoveTask(column._id, task.id)}
-              />
-            ))}
-            <Form
-              btnTitle="Add Task"
-              fields={fields}
-              onSuccess={() => handleAddTask(column?._id, column.columnName)}
-              formData={formData}
-              setFormData={setFormData}
-            />
-          </div>
-        ))}
-        <Form
-          btnTitle="Add Column"
-          fields={columnField}
-          onSuccess={handleAddColumn}
-          formData={formData}
-          setFormData={setFormData}
-        />
-      </div>
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <div className="task-board">
+          {columns.map((column) => (
+            <Droppable key={column._id} droppableId={column._id} direction="vertical">
+              {(provided) => (
+                <div
+                  className="column"
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                >
+                  <div className="column-header">
+                    <h3
+                      contentEditable
+                      suppressContentEditableWarning
+                      onBlur={(e) =>
+                        handleRenameColumn(
+                          column._id,
+                          e.currentTarget.textContent || column.columnName
+                        )
+                      }
+                    >
+                      {column.columnName}
+                    </h3>
+                    <button onClick={() => handleRemoveColumn(column._id)}>X</button>
+                  </div>
+
+                  {column.tasks.map((task, index) => (
+                    <Draggable key={task.id} draggableId={task.id} index={index}>
+                      {(provided) => (
+                        <div
+                          className="task-card"
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <TaskCard
+                            task={task}
+                            onEdit={() => console.log("Edit task", task.id)}
+                            onDelete={() => handleRemoveTask(column._id, task.id)}
+                          />
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+
+                  <Form
+                    btnTitle="Add Task"
+                    fields={fields}
+                    onSuccess={() => handleAddTask(column._id, column.columnName)}
+                    formData={formData}
+                    setFormData={setFormData}
+                  />
+                </div>
+              )}
+            </Droppable>
+          ))}
+          <Form
+            btnTitle="Add Column"
+            fields={columnField}
+            onSuccess={handleAddColumn}
+            formData={formData}
+            setFormData={setFormData}
+          />
+        </div>
+      </DragDropContext>
     </div>
   );
 };
