@@ -20,6 +20,7 @@ interface Column {
 
 interface TaskContextType {
   tasks: Task[];
+  columns: Column[];  // Added columns state
   getTasks: any;
   getColumns: any;
   addTask: (formData: any) => Promise<{ success: boolean; message: string }>;
@@ -28,9 +29,9 @@ interface TaskContextType {
     taskId: string,
     updatedTask: Partial<Task>
   ) => Promise<{ success: boolean; message: string }>;
-  updateColumn: any;
+  updateColumn: (id: string, newName: string) => Promise<{ success: boolean; message: string }>;
   deleteTask: (taskId: string) => Promise<{ success: boolean; message: string }>;
-  deleteColumn: any;
+  deleteColumn: (id: string) => Promise<{ success: boolean; message: string }>;
 }
 
 const TaskContext = createContext<TaskContextType | undefined>(undefined);
@@ -49,11 +50,12 @@ interface TaskProviderProps {
 
 export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]); // Added state for columns
 
   const getTasks = async (): Promise<{ success: boolean; message: string; data?: Task[] }> => {
     try {
       const { data } = await axios.get(`${Base_url}/tasks`);
-      setTasks(data.tasks); 
+      setTasks(data.tasks);
       return { success: true, message: "Tasks fetched successfully!", data: data.tasks };
     } catch (error: any) {
       console.error("Failed to fetch tasks:", error.message);
@@ -64,7 +66,8 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const getColumns = async (): Promise<{ success: boolean; message: string; data?: Column[] }> => {
     try {
       const { data } = await axios.get(`${Base_url}/columns`);
-      return { success: true, message: "Columns fetched successfully!", data: data };
+      setColumns(data); // Update state with fetched columns
+      return { success: true, message: "Columns fetched successfully!", data };
     } catch (error: any) {
       console.error("Failed to fetch columns:", error.message);
       return { success: false, message: error.message };
@@ -75,22 +78,21 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     try {
       const { task, columnName } = payload;
       const { data } = await axios.post(`${Base_url}/create/task/${columnName}`, task);
-  
+
       // Update state with the new task
       setTasks((prevTasks) => [...prevTasks, data.task]);
-  
+
       return { success: true, message: "Task added successfully!" };
     } catch (error: any) {
       console.error("Failed to add task:", error.message);
       return { success: false, message: error.message };
     }
   };
-  
-  
 
   const addColumn = async (formData: any): Promise<{ success: boolean; message: string }> => {
     try {
-      await axios.post(`${Base_url}/create/column`, formData);
+      const { data } = await axios.post(`${Base_url}/create/column`, formData);
+      setColumns((prevColumns) => [...prevColumns, data.column]); // Update state with new column
       return { success: true, message: "Column added successfully!" };
     } catch (error: any) {
       console.error("Failed to add column:", error.message);
@@ -116,22 +118,24 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
 
   const updateColumn = async (
     id: string,
-    newName: any
+    newName: string
   ): Promise<{ success: boolean; message: string }> => {
     try {
-      console.log("newName: ",newName);
-      await axios.put(`${Base_url}/update/column/${id}`, newName);
+      await axios.put(`${Base_url}/update/column/${id}`, { title: newName });
+      setColumns((prevColumns) =>
+        prevColumns.map((column) => (column.id === id ? { ...column, title: newName } : column))
+      );
       return { success: true, message: "Column updated successfully!" };
     } catch (error: any) {
-      console.error("Failed to update task:", error.message);
+      console.error("Failed to update column:", error.message);
       return { success: false, message: error.message };
     }
   };
 
-  const deleteTask = async (payload: any): Promise<{ success: boolean; message: string }> => {
+  const deleteTask = async (taskId: string): Promise<{ success: boolean; message: string }> => {
     try {
-      const { columnId, taskId } = payload;
-      await axios.delete(`${Base_url}/delete/${columnId}/${taskId}`);
+      await axios.delete(`${Base_url}/delete/task/${taskId}`);
+      setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
       return { success: true, message: "Task deleted successfully!" };
     } catch (error: any) {
       console.error("Failed to delete task:", error.message);
@@ -141,19 +145,20 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
 
   const deleteColumn = async (id: string): Promise<{ success: boolean; message: string }> => {
     try {
-      console.log("delete column clikced");
       await axios.delete(`${Base_url}/delete/column/${id}`);
-      setTasks((prevTasks) => prevTasks.filter((column) => column.id !== id));
+      setColumns((prevColumns) => prevColumns.filter((column) => column.id !== id));
       return { success: true, message: "Column deleted successfully!" };
     } catch (error: any) {
-      console.error("Failed to delete task:", error.message);
+      console.error("Failed to delete column:", error.message);
       return { success: false, message: error.message };
     }
   };
+
   return (
     <TaskContext.Provider
       value={{
         tasks,
+        columns,
         getTasks,
         getColumns,
         addTask,
@@ -161,7 +166,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         updateTask,
         updateColumn,
         deleteTask,
-        deleteColumn
+        deleteColumn,
       }}
     >
       {children}
