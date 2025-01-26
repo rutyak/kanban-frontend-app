@@ -1,0 +1,40 @@
+.menu-drawer {
+    width: 250px;
+    background-color: #fff;
+    padding: 20px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    border-right: 1px solid #ccc;
+  }
+  
+  .menu-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .menu-item {
+    padding: 10px 0;
+  }
+  
+  .menu-link {
+    text-decoration: none;
+    color: black;
+    font-size: 16px;
+    display: block;
+    padding: 8px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .menu-link:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .menu-item:hover {
+    cursor: pointer;
+    background-color: #f0f0f0;
+  }
+  
