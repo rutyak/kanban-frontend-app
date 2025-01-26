@@ -107,7 +107,6 @@ const Dashboard: React.FC = () => {
         task: newTask,
         columnName,
       };
-      // Call the updated addTask function
       const { success } = await addTask(payload);
 
       if (success) {
