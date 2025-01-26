@@ -1,28 +1,10 @@
-/* General Styles */
-
-
-.add-task-btn {
-  padding: 0.75rem 1.5rem;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.add-task-btn:hover {
-  background-color: #0056b3;
-}
-
-/* Modal Styles */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -30,26 +12,19 @@
 }
 
 .modal-container {
-  background: #fff;
-  border-radius: 10px;
-  width: 90%;
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  width: 90%; 
   max-width: 500px;
-  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   position: relative;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-/* Header Styles */
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
-}
-
-.modal-header h2 {
-  margin: 0;
-  font-size: 1.5rem;
 }
 
 .close-button {
@@ -57,68 +32,69 @@
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
-  color: #555;
-  transition: color 0.3s ease;
 }
 
-.close-button:hover {
-  color: #000;
-}
-
-/* Form Styles */
 .modal-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  margin-top: 20px;
 }
 
 .form-group {
-  display: flex;
-  flex-direction: column;
+  margin-bottom: 15px;
 }
 
 .form-label {
-  margin-bottom: 0.5rem;
-  font-weight: 600;
+  display: block;
+  margin-bottom: 5px;
 }
 
 .form-input {
-  padding: 0.5rem;
+  width: 100%;
+  padding: 8px;
   border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 1rem;
+  border-radius: 4px;
 }
 
 .form-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 0.5rem;
+  gap: 10px;
+}
+
+.add-task-btn {
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-task-btn:hover {
+  background-color: #0056b3;
 }
 
 .submit-btn {
-  padding: 0.5rem 1rem;
   background-color: #28a745;
-  color: #fff;
+  color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
+  padding: 10px 15px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+}
+
+.cancel-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 15px;
+  cursor: pointer;
 }
 
 .submit-btn:hover {
   background-color: #218838;
 }
 
-.cancel-btn {
-  padding: 0.5rem 1rem;
-  background-color: #f44336;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
 .cancel-btn:hover {
-  background-color: #d32f2f;
+  background-color: #c82333;
 }

@@ -2,12 +2,18 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 interface MenuDrawerProps {
-  user: any; 
-  toggleDrawer: (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => void;
+  user: any;
+  toggleDrawer: (
+    open: boolean
+  ) => (event: React.KeyboardEvent | React.MouseEvent) => void;
   handleLogout: () => void;
 }
 
-const MenuDrawer: React.FC<MenuDrawerProps> = ({ user, toggleDrawer, handleLogout }) => {
+const MenuDrawer: React.FC<MenuDrawerProps> = ({
+  user,
+  toggleDrawer,
+  handleLogout,
+}) => {
   const navigate = useNavigate();
 
   return (
@@ -23,34 +29,10 @@ const MenuDrawer: React.FC<MenuDrawerProps> = ({ user, toggleDrawer, handleLogou
             Home
           </Link>
         </li>
-        <li className="menu-item">
-          <Link to="/createblog" className="menu-link">
-            Blog Creation
-          </Link>
+
+        <li className="menu-item" onClick={handleLogout}>
+          Logout
         </li>
-        {user ? (
-          <>
-            <li className="menu-item" onClick={() => navigate("/profile")}>
-              Profile
-            </li>
-            <li className="menu-item" onClick={handleLogout}>
-              Logout
-            </li>
-          </>
-        ) : (
-          <>
-            <li className="menu-item">
-              <Link to="/signin" className="menu-link">
-                Sign In
-              </Link>
-            </li>
-            <li className="menu-item">
-              <Link to="/signup" className="menu-link">
-                Sign Up
-              </Link>
-            </li>
-          </>
-        )}
       </ul>
     </div>
   );

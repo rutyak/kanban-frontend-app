@@ -1,5 +1,4 @@
-/* Signin.css */
-.signin-container {
+.login-container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -8,7 +7,7 @@
     padding: 1rem;
   }
   
-  .signin-card {
+  .login-card {
     padding: 2rem;
     max-width: 400px;
     width: 100%;
@@ -18,18 +17,19 @@
     text-align: center;
   }
   
-  .signin-card h1 {
+  .login-card h1 {
+    font-size: 1.5rem;
     font-weight: bold;
-    color: #333;
     margin-bottom: 0.5rem;
+    color: #333;
   }
   
-  .signin-card p {
+  .login-card p {
     color: #666;
     margin-bottom: 1rem;
   }
   
-  .signin-form input {
+  .login-form input {
     width: 100%;
     padding: 0.75rem;
     margin-bottom: 1rem;
@@ -38,7 +38,7 @@
     font-size: 1rem;
   }
   
-  .signin-button {
+  .login-button {
     width: 100%;
     padding: 0.75rem;
     font-weight: bold;
@@ -50,12 +50,12 @@
     transition: background-color 0.3s ease;
   }
   
-  .signin-button:disabled {
+  .login-button:disabled {
     background-color: #a5d6a7;
     cursor: not-allowed;
   }
   
-  .signin-button:hover:not(:disabled) {
+  .login-button:hover:not(:disabled) {
     background-color: #43a047;
   }
   

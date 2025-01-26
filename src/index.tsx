@@ -10,7 +10,6 @@ import Login from "./pages/Auth/Login";
 import Signup from "./pages/Auth/Signup";
 import Dashboard from "./pages/Home/Dashboard";
 import { TaskProvider } from "./context/TaskContext";
-const Profile = lazy(() => import("./pages/Profile/Profile"));
 
 const Fallback: React.FC = () => (
   <div className="flex justify-center items-center h-screen">
@@ -28,22 +27,6 @@ const router = createBrowserRouter([
         path: "",
         element: <Dashboard />,
       },
-      // {
-      //   path: "createblog",
-      //   element: (
-      //     <PrivateRoute>
-      //       <Form />
-      //     </PrivateRoute>
-      //   ),
-      // },
-      // {
-      //   path: "profile",
-      //   element: (
-      //     <Suspense fallback={<Fallback />}>
-      //       <Profile />
-      //     </Suspense>
-      //   ),
-      // },
     ],
   },
   {

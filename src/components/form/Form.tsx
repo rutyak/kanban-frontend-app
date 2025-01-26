@@ -11,8 +11,8 @@ interface FormProps {
   btnTitle: string;
   fields: Field[];
   onSuccess: (formData: Record<string, string>) => void;
-  formData: any;
-  setFormData: any;
+  formData: Record<string, string>;
+  setFormData: React.Dispatch<React.SetStateAction<Record<string, string>>>;
 }
 
 const Form: React.FC<FormProps> = ({
@@ -23,14 +23,14 @@ const Form: React.FC<FormProps> = ({
   setFormData,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev: any) => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value    
+      [name]: value,
     }));
   };
-  
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,13 +38,10 @@ const Form: React.FC<FormProps> = ({
     setIsOpen(false);
   };
 
-  const openModal = () => {
-    setIsOpen(true);
-  };
+  const openModal = () => setIsOpen(true);
+  const closeModal = () => setIsOpen(false);
 
-  const closeModal = () => {
-    setIsOpen(false);
-  };
+  const stopPropagation = (e: React.MouseEvent) => e.stopPropagation();
 
   return (
     <div>
@@ -53,8 +50,8 @@ const Form: React.FC<FormProps> = ({
       </button>
 
       {isOpen && (
-        <div className="modal-overlay">
-          <div className="modal-container">
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal-container" onClick={stopPropagation}>
             <div className="modal-header">
               <h2>{btnTitle}</h2>
               <button onClick={closeModal} className="close-button">
@@ -82,11 +79,7 @@ const Form: React.FC<FormProps> = ({
                 <button type="submit" className="submit-btn">
                   Submit
                 </button>
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  className="cancel-btn"
-                >
+                <button type="button" onClick={closeModal} className="cancel-btn">
                   Cancel
                 </button>
               </div>

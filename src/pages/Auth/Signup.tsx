@@ -51,45 +51,41 @@ const Signup: React.FC = () => {
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="username">Username</label>
             <input
-              id="username"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              placeholder="Username"
               required
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="email">Email</label>
             <input
-              id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
               required
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="password">Password</label>
             <input
-              id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
               required
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="confirmPassword">Confirm Password</label>
             <input
-              id="confirmPassword"
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Confirm Password"
               required
             />
           </div>
@@ -103,7 +99,7 @@ const Signup: React.FC = () => {
           </button>
         </form>
 
-        <p>
+        <p className="signup-link">
           Already have an account?{" "}
           <span className="login-link" onClick={() => navigate("/login")}>
             Login

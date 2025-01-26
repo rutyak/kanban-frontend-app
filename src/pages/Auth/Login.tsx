@@ -3,7 +3,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
 
-const Signin: React.FC = () => {
+const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -32,12 +32,12 @@ const Signin: React.FC = () => {
   }
 
   return (
-    <div className="signin-container">
-      <div className="signin-card">
-        <h1>Welcome to Blog Platform</h1>
+    <div className="login-container">
+      <div className="login-card">
+        <h1>Welcome to Kanban Board</h1>
         <p>Sign In to Get Started.</p>
 
-        <form onSubmit={handleSubmit} className="signin-form">
+        <form onSubmit={handleSubmit} className="login-form">
           <input
             id="email"
             type="email"
@@ -56,8 +56,8 @@ const Signin: React.FC = () => {
             required
           />
 
-          <button type="submit" disabled={loading} className="signin-button">
-            {loading ? "Signing In..." : "Sign In"}
+          <button type="submit" disabled={loading} className="login-button">
+            {loading ? "Loging In..." : "Login"}
           </button>
         </form>
 
@@ -74,4 +74,4 @@ const Signin: React.FC = () => {
   );
 };
 
-export default Signin;
+export default Login;
